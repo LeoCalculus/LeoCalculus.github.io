@@ -1,2 +1,2 @@
-# LeoCalculus.github.io
-Leo's personal website
+# Personal website
+Leo's personal website at: [text](https://leocalculus.github.io/)
