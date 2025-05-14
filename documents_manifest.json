@@ -11,20 +11,20 @@
         "path": "Documents/Welcome.md"
       },
       {
-        "id": "projects_folder_01",
+        "id": "math_302",
         "type": "folder",
-        "name": "Project Ideas",
+        "name": "MATH 302",
         "children": [
           {
             "id": "project_a_md",
             "type": "file",
-            "name": "Project_Alpha.md",
+            "name": "Chapter_1.md",
             "path": "Documents/ProjectIdeas/Project_Alpha.md"
           },
           {
             "id": "project_b_md",
             "type": "file",
-            "name": "Project_Beta_Notes.md",
+            "name": "Chapter_2.md",
             "path": "Documents/ProjectIdeas/Project_Beta_Notes.md"
           }
         ]
