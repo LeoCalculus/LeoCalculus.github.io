@@ -7,7 +7,7 @@
       {
         "id": "intro_file_01",
         "type": "file",
-        "name": "Welcome.md",
+        "name": "Welcome Info",
         "path": "Documents/Welcome.md"
       },
       {
@@ -16,50 +16,18 @@
         "name": "MATH 302",
         "children": [
           {
-            "id": "project_a_md",
+            "id": "chapter_1",
             "type": "file",
-            "name": "Chapter_1.md",
-            "path": "Documents/ProjectIdeas/Project_Alpha.md"
+            "name": "Chapter 1",
+            "path": "Documents/MATH 302/Chapter 1.md"
           },
           {
-            "id": "project_b_md",
+            "id": "chapter_2",
             "type": "file",
-            "name": "Chapter_2.md",
-            "path": "Documents/ProjectIdeas/Project_Beta_Notes.md"
+            "name": "Chapter 2",
+            "path": "Documents/MATH 302/Chapter 2.md"
           }
         ]
-      },
-      {
-        "id": "learning_folder_01",
-        "type": "folder",
-        "name": "Learning Notes",
-        "children": [
-          {
-            "id": "js_notes_folder",
-            "type": "folder",
-            "name": "JavaScript",
-            "children": [
-              {
-                "id": "js_async_md",
-                "type": "file",
-                "name": "AsyncAwait.md",
-                "path": "Documents/LearningNotes/JavaScript/AsyncAwait.md"
-              }
-            ]
-          },
-          {
-            "id": "math_concepts_md",
-            "type": "file",
-            "name": "Key Math Concepts.md",
-            "path": "Documents/LearningNotes/KeyMathConcepts.md"
-          }
-        ]
-      },
-      {
-        "id": "empty_folder_01",
-        "type": "folder",
-        "name": "Miscellaneous (Empty)",
-        "children": []
       }
     ]
   }
