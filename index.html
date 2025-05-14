@@ -1,7 +1,568 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        <h1>Hello World</h1>
-        <p>Leo's Github page!</p>
-    </body>
+<html lang="en" class=""> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Website</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #e0e7ff; /* Light indigo background */
+            --text-color: #1f2937; /* Darker gray for text */
+            --text-muted-color: #6b7280; /* Gray-500 for muted text */
+            --primary-accent-color: #4f46e5; /* Indigo-600 */
+            --primary-accent-hover-color: #4338ca; /* Indigo-700 */
+            --card-bg-color: rgba(255, 255, 255, 0.65);
+            --card-border-color: rgba(209, 213, 219, 0.2);
+            --header-bg-color: rgba(255, 255, 255, 0.75);
+            --shadow-color-light: rgba(0,0,0,0.1);
+            --shadow-color-medium: rgba(0,0,0,0.06);
+            --icon-folder-color: #f59e0b; /* amber-500 */
+            --icon-file-color: #3b82f6; /* blue-500 */
+            --pre-bg-color: #1f2937; /* gray-800 */
+            --pre-text-color: #e5e7eb; /* gray-200 */
+            --font-code: Consolas, 'Courier New', Courier, monospace;
+        }
+
+        html.dark {
+            --bg-color: #111827; /* Gray-900 */
+            --text-color: #f3f4f6; /* Gray-100 */
+            --text-muted-color: #9ca3af; /* Gray-400 */
+            --primary-accent-color: #6366f1; /* Indigo-500 */
+            --primary-accent-hover-color: #4f46e5; /* Indigo-600 */
+            --card-bg-color: rgba(31, 41, 55, 0.65); /* Gray-800 with opacity */
+            --card-border-color: rgba(75, 85, 99, 0.3); /* Gray-600 with opacity */
+            --header-bg-color: rgba(31, 41, 55, 0.75); /* Gray-800 with opacity */
+            --shadow-color-light: rgba(255,255,255,0.05);
+            --shadow-color-medium: rgba(255,255,255,0.03);
+            --icon-folder-color: #fcd34d; /* amber-300 */
+            --icon-file-color: #60a5fa; /* blue-400 */
+            --pre-bg-color: #374151; /* gray-700 */
+            --pre-text-color: #d1d5db; /* gray-300 */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .frosted-glass {
+            background-color: var(--card-bg-color);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            border: 1px solid var(--card-border-color);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px var(--shadow-color-light), 0 2px 4px -1px var(--shadow-color-medium);
+        }
+        .header-frosted {
+            background-color: var(--header-bg-color);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            box-shadow: 0 2px 10px var(--shadow-color-light);
+        }
+        .tab-active {
+            border-bottom-width: 3px;
+            border-color: var(--primary-accent-color);
+            color: var(--primary-accent-color) !important;
+            font-weight: 700;
+        }
+        .tab { color: var(--text-muted-color); }
+        .tab:not(.tab-active):hover { color: var(--primary-accent-color); }
+
+        .document-item {
+            display: flex; align-items: center; padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem; cursor: pointer; transition: background-color 0.2s;
+            color: var(--text-color);
+        }
+        .document-item:hover { background-color: rgba(129, 140, 248, 0.2); }
+        html.dark .document-item:hover { background-color: rgba(99, 102, 241, 0.3); }
+        .document-item svg { margin-right: 0.5rem; width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+        .document-item .icon-folder { color: var(--icon-folder-color); }
+        .document-item .icon-file { color: var(--icon-file-color); }
+        .document-item-name { flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .document-content-viewer {
+            background-color: var(--card-bg-color); border-radius: 0.5rem; padding: 1.5rem;
+            min-height: 300px; box-shadow: 0 4px 6px -1px var(--shadow-color-light), 0 2px 4px -1px var(--shadow-color-medium);
+            color: var(--text-color);
+        }
+        .document-content-viewer pre {
+            background-color: var(--pre-bg-color); color: var(--pre-text-color);
+            padding: 1rem; border-radius: 0.375rem; overflow-x: auto;
+            font-family: var(--font-code);
+            font-size: 0.9em;
+        }
+        .document-content-viewer code {
+            font-family: var(--font-code);
+        }
+        .document-content-viewer h1, .document-content-viewer h2, .document-content-viewer h3 { font-weight: 600; margin-top: 1em; margin-bottom: 0.5em; color: var(--text-color); }
+        .document-content-viewer h1 { font-size: 1.875rem; } .document-content-viewer h2 { font-size: 1.5rem; } .document-content-viewer h3 { font-size: 1.25rem; }
+        .document-content-viewer p { margin-bottom: 0.75em; line-height: 1.6; }
+        .document-content-viewer ul, .document-content-viewer ol { margin-left: 1.5em; margin-bottom: 0.75em; }
+        .document-content-viewer li { margin-bottom: 0.25em; }
+
+        mjx-container { overflow-x: auto; overflow-y: hidden; display: block; margin: 0.5em 0; }
+        
+        .breadcrumb-item { cursor: pointer; color: var(--primary-accent-color); }
+        .breadcrumb-item:hover { text-decoration: underline; }
+        .breadcrumb-separator { margin: 0 0.5rem; color: var(--text-muted-color); }
+
+        .theme-switch-wrapper { display: flex; align-items: center; }
+        .theme-switch { display: inline-block; height: 24px; position: relative; width: 44px; margin-left: 1rem; }
+        .theme-switch input { display:none; }
+        .slider {
+            background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0;
+            transition: .4s; border-radius: 24px;
+        }
+        .slider:before {
+            background-color: #fff; bottom: 3px; content: ""; height: 18px; left: 3px; position: absolute;
+            transition: .4s; width: 18px; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--primary-accent-color); }
+        input:checked + .slider:before { transform: translateX(20px); }
+        html.dark .slider { background-color: #555; }
+        html.dark input:checked + .slider { background-color: var(--primary-accent-color); }
+    </style>
+</head>
+<body>
+    <header class="header-frosted sticky top-0 z-40">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 id="userName" class="text-2xl sm:text-3xl font-bold" style="color: var(--primary-accent-color);"></h1>
+            <nav class="flex items-center">
+                <button onclick="showSection('home')" class="tab py-2 px-4 focus:outline-none tab-active" data-tab="home">Home</button>
+                <button onclick="showSection('documents')" class="tab py-2 px-4 focus:outline-none" data-tab="documents">Documents</button>
+                <div class="theme-switch-wrapper">
+                    <label class="theme-switch" for="themeToggleCheckbox">
+                        <input type="checkbox" id="themeToggleCheckbox" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 py-8">
+        <section id="home" class="content-section">
+            <div class="frosted-glass p-6 sm:p-8">
+                <h2 class="text-2xl sm:text-3xl font-semibold mb-6">About Me</h2>
+                <div id="personalInfoContent" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <section id="documents" class="content-section hidden">
+            <div class="frosted-glass p-6 sm:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl sm:text-3xl font-semibold">My Documents</h2>
+                </div>
+                <div id="breadcrumbsContainer" class="mb-4 text-sm flex items-center"></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div id="documentNavigation" class="md:col-span-1 p-4 rounded-lg shadow-inner" style="background-color: rgba(0,0,0,0.03);">
+                        <h3 class="text-lg font-medium mb-3">Explorer</h3>
+                        <div id="documentListContainer" class="space-y-1"></div>
+                    </div>
+                    <div id="documentViewer" class="md:col-span-2">
+                        <div id="documentContentViewer" class="document-content-viewer min-h-[400px]">
+                            <p class="italic" style="color: var(--text-muted-color);">Select a file to view its content. Document structure is loaded from documents_manifest.json.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-10 text-sm" style="color: var(--text-muted-color);">
+        <p>&copy; <span id="currentYear"></span> <span id="footerName"></span>. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // --- Default Static User Configuration (Fallback for config.json) ---
+        let siteConfig = {
+            userName: "Your Name (Default)",
+            footerName: "Your Name (Default)",
+            personalInfoHTML: `
+                <p>Welcome to my personal page! (Default Info)</p>
+                <p>To customize this, create 'config.json' next to this HTML file.</p>
+            `
+        };
+
+        // --- MathJax Configuration ---
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+            svg: { fontCache: 'global' }
+        };
+
+        // --- Global Variables & DOM Elements ---
+        const sections = { home: document.getElementById('home'), documents: document.getElementById('documents') };
+        const tabs = document.querySelectorAll('.tab');
+        const userNameElement = document.getElementById('userName');
+        const footerNameElement = document.getElementById('footerName');
+        const currentYearElement = document.getElementById('currentYear');
+        const themeToggle = document.getElementById('themeToggleCheckbox');
+        const htmlElement = document.documentElement;
+        
+        const personalInfoContent = document.getElementById('personalInfoContent');
+        const documentListContainer = document.getElementById('documentListContainer');
+        const documentContentViewer = document.getElementById('documentContentViewer');
+        const breadcrumbsContainer = document.getElementById('breadcrumbsContainer');
+
+        let documentsData = []; // This will be populated from documents_manifest.json
+        let currentFolderId = null; // Will be set to the root folder ID from the manifest
+
+        // --- Default Document Structure (Fallback for documents_manifest.json) ---
+        // This defines a basic root "Documents" folder.
+        // The actual content structure should come from 'documents_manifest.json'.
+        // Example documents_manifest.json structure:
+        // [
+        //   {
+        //     "id": "docs_root_folder", "type": "folder", "name": "Documents",
+        //     "children": [
+        //       { "id": "intro_md", "type": "file", "name": "Introduction.md", "path": "Documents/Introduction.md" },
+        //       { 
+        //         "id": "notes_folder", "type": "folder", "name": "Notes",
+        //         "children": [
+        //            { "id": "tech_notes_md", "type": "file", "name": "TechNotes.md", "path": "Documents/Notes/TechNotes.md" }
+        //         ]
+        //       }
+        //     ]
+        //   }
+        // ]
+        const fallbackDocumentStructure = [ 
+            {
+                id: 'docs_root_fallback', 
+                type: 'folder',
+                name: 'Documents (Fallback)', 
+                children: [
+                    { id: 'fallback_info_file', type: 'file', name: 'ManifestInfo.md', content: '# Document Manifest Not Loaded\n\nPlease ensure `documents_manifest.json` exists in the same directory as `index.html` and is correctly formatted. This file defines the folder and file structure for the Documents section.' }
+                ]
+            }
+        ];
+        
+        // --- SVG Icons ---
+        const folderIconSVG = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="icon-folder">
+                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+            </svg>`;
+        const fileIconSVG = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="icon-file">
+                <path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V7.414A2 2 0 0017.414 6L12 1.586A2 2 0 0010.586 1H4zm6 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm2-3a1 1 0 011 1v5a1 1 0 11-2 0v-5a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>`;
+
+        // --- Initialization ---
+        async function initializeApp() {
+            initializeTheme();
+            await loadSiteConfig(); 
+            await initializeDocumentsData(); // Now async to fetch manifest
+            showSection('home'); 
+            currentYearElement.textContent = new Date().getFullYear();
+            themeToggle.addEventListener('change', toggleTheme);
+            
+            // If documents tab is somehow active on load, render it
+            if (document.getElementById('documents').classList.contains('content-section') && !document.getElementById('documents').classList.contains('hidden')) {
+                renderDocumentNavigation();
+                renderBreadcrumbs();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        // --- Theme (Dark/Light Mode) Functions ---
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                htmlElement.classList.add('dark');
+                themeToggle.checked = true;
+            } else {
+                htmlElement.classList.remove('dark');
+                themeToggle.checked = false;
+            }
+        }
+        function toggleTheme() {
+            if (themeToggle.checked) {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // --- Site Configuration Loading ---
+        async function loadSiteConfig() {
+            try {
+                const response = await fetch('config.json');
+                if (response.ok) {
+                    const configFromFile = await response.json();
+                    siteConfig = { ...siteConfig, ...configFromFile };
+                    console.log("Successfully loaded config.json");
+                } else {
+                    console.warn("config.json not found or couldn't be loaded. Using default site configuration. Status:", response.status);
+                }
+            } catch (error) {
+                console.warn("Error fetching config.json. Using default site configuration.", error);
+            }
+            setStaticUserInfo();
+        }
+
+        function setStaticUserInfo() {
+            userNameElement.textContent = siteConfig.userName;
+            footerNameElement.textContent = siteConfig.footerName;
+            personalInfoContent.innerHTML = siteConfig.personalInfoHTML;
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise([personalInfoContent]).catch(err => console.error('MathJax error on personal info:', err));
+            }
+        }
+
+        // --- Navigation / Section Switching ---
+        function showSection(sectionId) {
+            Object.values(sections).forEach(s => s.classList.add('hidden'));
+            if (sections[sectionId]) sections[sectionId].classList.remove('hidden');
+            tabs.forEach(tab => {
+                tab.classList.toggle('tab-active', tab.dataset.tab === sectionId);
+            });
+            if (sectionId === 'documents') {
+                // currentFolderId should be set by initializeDocumentsData or when navigating
+                if (!currentFolderId && documentsData.length > 0 && documentsData[0].type === 'folder') {
+                     currentFolderId = documentsData[0].id; // Default to the first top-level folder from manifest
+                }
+                renderDocumentNavigation();
+                renderBreadcrumbs();
+            }
+        }
+        
+        // --- Document System Functions (Read-Only & Dynamic Content Fetching) ---
+        function generateId() { return '_' + Math.random().toString(36).substr(2, 9); }
+
+        function flattenStructure(items, parentId = null) {
+            let flatList = [];
+            items.forEach(item => {
+                const id = item.id || generateId(); // Ensure items from manifest have IDs
+                // Files will have 'path', folders will have 'children' (which are processed recursively)
+                // Embedded 'content' is only for fallback or direct definition.
+                const currentItem = { ...item, id, parentId, children: undefined }; 
+                flatList.push(currentItem);
+                if (item.children && item.type === 'folder') {
+                    flatList = flatList.concat(flattenStructure(item.children, id));
+                }
+            });
+            return flatList;
+        }
+
+        async function initializeDocumentsData() {
+            let structureToFlatten = fallbackDocumentStructure;
+            try {
+                const response = await fetch('documents_manifest.json');
+                if (response.ok) {
+                    const manifestStructure = await response.json();
+                    if (manifestStructure && manifestStructure.length > 0) {
+                        structureToFlatten = manifestStructure;
+                        console.log("Successfully loaded documents_manifest.json");
+                    } else {
+                        console.warn("documents_manifest.json is empty or invalid. Using fallback structure.");
+                    }
+                } else {
+                    console.warn("documents_manifest.json not found. Using fallback structure. Status:", response.status);
+                }
+            } catch (error) {
+                console.warn("Error fetching documents_manifest.json. Using fallback structure.", error);
+            }
+            documentsData = flattenStructure(structureToFlatten);
+            // Set currentFolderId to the ID of the first item in the manifest (should be the root "Documents" folder)
+            if (documentsData.length > 0 && documentsData[0].type === 'folder') {
+                currentFolderId = documentsData[0].id;
+            } else {
+                currentFolderId = null; // Or some other sensible default if manifest is truly empty/broken
+            }
+        }
+
+
+        function renderDocumentNavigation() {
+            documentListContainer.innerHTML = '';
+            const itemsInCurrentFolder = documentsData.filter(item => item.parentId === currentFolderId);
+
+            if (itemsInCurrentFolder.length === 0) {
+                 const currentFolderObj = documentsData.find(item => item.id === currentFolderId);
+                 if (currentFolderObj) { // If it's a valid folder from the manifest
+                    documentListContainer.innerHTML = `<p class="text-sm px-2" style="color: var(--text-muted-color);">This folder is empty.</p>`;
+                 } else { // If currentFolderId is null or points to something not in manifest (e.g. initial load failed)
+                    documentListContainer.innerHTML = `<p class="text-sm px-2" style="color: var(--text-muted-color);">No documents to display. Check documents_manifest.json.</p>`;
+                 }
+                 return;
+            }
+
+            itemsInCurrentFolder.sort((a, b) => {
+                if (a.type === 'folder' && b.type === 'file') return -1;
+                if (a.type === 'file' && b.type === 'folder') return 1;
+                return a.name.localeCompare(b.name);
+            });
+
+            itemsInCurrentFolder.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'document-item group';
+                itemDiv.setAttribute('data-id', item.id);
+                itemDiv.setAttribute('data-type', item.type);
+                const icon = item.type === 'folder' ? folderIconSVG : fileIconSVG;
+                const nameSpan = `<span class="document-item-name">${item.name}</span>`;
+                itemDiv.innerHTML = `${icon} ${nameSpan}`;
+                itemDiv.onclick = () => handleItemClick(item.id, item.type);
+                documentListContainer.appendChild(itemDiv);
+            });
+        }
+        
+        function simpleMarkdownToHTML(mdText) {
+            if (mdText === null || typeof mdText === 'undefined') return '<p class="italic text-red-500">Error: Content is missing.</p>';
+            let html = mdText;
+            // Code blocks
+            html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
+                const languageClass = lang ? `language-${lang}` : '';
+                const escapedCode = code.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return `<pre><code class="${languageClass}">${escapedCode.trim()}</code></pre>`;
+            });
+            // Headings
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+            // Bold and Italic
+            html = html.replace(/\*\*(.*?)\*\*|__(.*?)__/g, '<strong>$1$2</strong>');
+            html = html.replace(/\*(.*?)\*|_(.*?)_/g, '<em>$1$2</em>');
+            // Paragraphs
+             html = html.split('\n\n').map(paragraph => {
+                if (paragraph.startsWith('<pre>') || paragraph.startsWith('<h3>') || paragraph.startsWith('<h2>') || paragraph.startsWith('<h1>')) {
+                    return paragraph;
+                }
+                return paragraph.trim() ? `<p>${paragraph.replace(/\n/g, '<br>')}</p>` : '';
+            }).join('');
+            return html;
+        }
+
+        async function renderDocumentContent(fileId) {
+            const file = documentsData.find(item => item.id === fileId && item.type === 'file');
+            if (file) {
+                let markdownContent = "";
+                documentContentViewer.innerHTML = `<p class="italic" style="color: var(--text-muted-color);">Loading content...</p>`; // Loading indicator
+
+                if (file.path) { // If path exists, fetch content
+                    try {
+                        const response = await fetch(file.path);
+                        if (response.ok) {
+                            markdownContent = await response.text();
+                        } else {
+                            markdownContent = `# Error\n\nCould not load file from: ${file.path}\nStatus: ${response.status}`;
+                            console.error(`Failed to fetch ${file.path}: ${response.status}`);
+                        }
+                    } catch (error) {
+                        markdownContent = `# Error\n\nCould not load file from: ${file.path}\nException: ${error}`;
+                        console.error(`Error fetching ${file.path}:`, error);
+                    }
+                } else if (typeof file.content !== 'undefined') { // Fallback to embedded content if no path
+                    markdownContent = file.content;
+                } else {
+                    markdownContent = "# Error\n\nFile has no path or embedded content defined in manifest.";
+                }
+                
+                let htmlContent = simpleMarkdownToHTML(markdownContent);
+                documentContentViewer.innerHTML = htmlContent;
+
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    MathJax.typesetPromise([documentContentViewer])
+                        .catch(err => console.error('MathJax typesetting error:', err));
+                }
+            } else {
+                documentContentViewer.innerHTML = `<p class="italic" style="color: var(--text-muted-color);">File not found in manifest.</p>`;
+            }
+        }
+        
+        function getFolderPath(folderId) {
+            const path = [];
+            let currentId = folderId;
+            const rootFolderFromManifest = (documentsData.length > 0 && documentsData[0].type === 'folder') ? documentsData[0] : null;
+
+            while (currentId) {
+                const folder = documentsData.find(item => item.id === currentId && item.type === 'folder');
+                if (folder) {
+                    path.unshift(folder);
+                    // Stop if we reached the root folder defined in the manifest
+                    if (rootFolderFromManifest && folder.id === rootFolderFromManifest.id) break; 
+                    currentId = folder.parentId;
+                     // Safety break if parentId leads to a loop or non-existent item
+                    if (!currentId && folder.id !== (rootFolderFromManifest ? rootFolderFromManifest.id : null)) break;
+                } else {
+                    break; 
+                }
+            }
+            return path;
+        }
+
+        function renderBreadcrumbs() {
+            breadcrumbsContainer.innerHTML = '';
+            const rootDocsFolder = (documentsData.length > 0 && documentsData[0].type === 'folder') ? documentsData[0] : null;
+            
+            if (!rootDocsFolder) { 
+                // This might happen if documents_manifest.json is empty or fails to load, and fallback is also minimal
+                breadcrumbsContainer.innerHTML = `<span style="color: var(--text-muted-color);">Documents</span>`;
+                return;
+            }
+
+            const rootLink = document.createElement('span');
+            rootLink.textContent = rootDocsFolder.name; 
+            rootLink.className = 'breadcrumb-item font-medium';
+            rootLink.onclick = () => {
+                currentFolderId = rootDocsFolder.id;
+                renderDocumentNavigation();
+                renderBreadcrumbs(); 
+                clearDocumentViewer();
+            };
+            breadcrumbsContainer.appendChild(rootLink);
+
+            if (currentFolderId && currentFolderId !== rootDocsFolder.id) {
+                const path = getFolderPath(currentFolderId); 
+                let pathFromRootDocuments = [];
+                let foundRoot = false;
+                for(let i=0; i < path.length; i++){
+                    if(path[i].id === rootDocsFolder.id) {
+                        foundRoot = true;
+                        continue; 
+                    }
+                    if(foundRoot){
+                         pathFromRootDocuments.push(path[i]);
+                    }
+                }
+                pathFromRootDocuments.forEach(folder => {
+                    const separator = document.createElement('span');
+                    separator.className = 'breadcrumb-separator';
+                    separator.textContent = '>';
+                    breadcrumbsContainer.appendChild(separator);
+
+                    const folderLink = document.createElement('span');
+                    folderLink.textContent = folder.name;
+                    folderLink.className = 'breadcrumb-item';
+                    folderLink.onclick = () => {
+                        currentFolderId = folder.id;
+                        renderDocumentNavigation();
+                        renderBreadcrumbs();
+                        clearDocumentViewer();
+                    };
+                    breadcrumbsContainer.appendChild(folderLink);
+                });
+            }
+        }
+        
+        function clearDocumentViewer() {
+            documentContentViewer.innerHTML = `<p class="italic" style="color: var(--text-muted-color);">Select a file to view its content. Document structure is loaded from documents_manifest.json.</p>`;
+        }
+
+        function handleItemClick(itemId, itemType) {
+            if (itemType === 'folder') {
+                currentFolderId = itemId;
+                renderDocumentNavigation();
+                renderBreadcrumbs();
+                clearDocumentViewer();
+            } else if (itemType === 'file') {
+                renderDocumentContent(itemId); // This is now async
+            }
+        }
+    </script>
+</body>
 </html>

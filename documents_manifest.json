@@ -1,0 +1,66 @@
+[
+  {
+    "id": "docs_root_from_manifest",
+    "type": "folder",
+    "name": "My Personal Documents",
+    "children": [
+      {
+        "id": "intro_file_01",
+        "type": "file",
+        "name": "Welcome.md",
+        "path": "Documents/Welcome.md"
+      },
+      {
+        "id": "projects_folder_01",
+        "type": "folder",
+        "name": "Project Ideas",
+        "children": [
+          {
+            "id": "project_a_md",
+            "type": "file",
+            "name": "Project_Alpha.md",
+            "path": "Documents/ProjectIdeas/Project_Alpha.md"
+          },
+          {
+            "id": "project_b_md",
+            "type": "file",
+            "name": "Project_Beta_Notes.md",
+            "path": "Documents/ProjectIdeas/Project_Beta_Notes.md"
+          }
+        ]
+      },
+      {
+        "id": "learning_folder_01",
+        "type": "folder",
+        "name": "Learning Notes",
+        "children": [
+          {
+            "id": "js_notes_folder",
+            "type": "folder",
+            "name": "JavaScript",
+            "children": [
+              {
+                "id": "js_async_md",
+                "type": "file",
+                "name": "AsyncAwait.md",
+                "path": "Documents/LearningNotes/JavaScript/AsyncAwait.md"
+              }
+            ]
+          },
+          {
+            "id": "math_concepts_md",
+            "type": "file",
+            "name": "Key Math Concepts.md",
+            "path": "Documents/LearningNotes/KeyMathConcepts.md"
+          }
+        ]
+      },
+      {
+        "id": "empty_folder_01",
+        "type": "folder",
+        "name": "Miscellaneous (Empty)",
+        "children": []
+      }
+    ]
+  }
+]
