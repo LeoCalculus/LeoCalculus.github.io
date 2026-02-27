@@ -693,6 +693,89 @@
             .wiki-content-card { padding: 1.25rem; }
         }
 
+        /* ===== GitHub Section ===== */
+        .github-section { margin-top: 1.5rem; }
+
+        .github-contrib-chart {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
+        }
+        .github-contrib-chart img {
+            width: 100%;
+            min-width: 600px;
+            border-radius: 0.75rem;
+        }
+        html.dark .github-contrib-chart img {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        .github-stats-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .github-stats-row img {
+            flex: 1;
+            min-width: 280px;
+            max-width: 100%;
+            border-radius: 0.75rem;
+        }
+
+        .github-activity h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .activity-list { list-style: none; padding: 0; margin: 0; }
+
+        .activity-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid var(--card-border-color);
+            font-size: 0.88rem;
+            line-height: 1.5;
+            align-items: flex-start;
+        }
+        .activity-item:last-child { border-bottom: none; }
+
+        .activity-icon {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--sidebar-hover-bg);
+            color: var(--text-muted-color);
+            margin-top: 0.1rem;
+        }
+
+        .activity-body { flex: 1; min-width: 0; }
+        .activity-body strong { color: var(--text-color); }
+        .activity-body a {
+            color: var(--primary-accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .activity-body a:hover { text-decoration: underline; }
+        .activity-time {
+            font-size: 0.76rem;
+            color: var(--text-muted-color);
+            margin-top: 0.15rem;
+        }
+
+        .activity-loading, .activity-empty {
+            color: var(--text-muted-color);
+            font-size: 0.88rem;
+            font-style: italic;
+            padding: 0.5rem 0;
+        }
+
         /* ===== Animation ===== */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
@@ -727,6 +810,24 @@
             <div class="frosted-glass p-6 sm:p-8 fade-in">
                 <h2 class="text-2xl sm:text-3xl font-semibold mb-6">About Me</h2>
                 <div id="personalInfoContent" class="space-y-4"></div>
+            </div>
+
+            <div id="githubSection" class="github-section frosted-glass p-6 sm:p-8 fade-in" style="display:none;">
+                <h2 class="text-2xl sm:text-3xl font-semibold mb-6">GitHub</h2>
+
+                <div class="github-contrib-chart">
+                    <img id="ghContribChart" alt="GitHub Contribution Graph" loading="lazy">
+                </div>
+
+                <div class="github-stats-row">
+                    <img id="ghStatsCard" alt="GitHub Stats" loading="lazy">
+                    <img id="ghStreakCard" alt="GitHub Streak" loading="lazy">
+                </div>
+
+                <div class="github-activity">
+                    <h3>Recent Activity</h3>
+                    <div id="ghActivity"><p class="activity-loading">Loading activity...</p></div>
+                </div>
             </div>
         </section>
 
@@ -771,7 +872,8 @@
         let siteConfig = {
             userName: "Leo Xu",
             footerName: "Leo Xu",
-            personalInfoHTML: "<p>Welcome to my personal page!</p>"
+            personalInfoHTML: "<p>Welcome to my personal page!</p>",
+            githubUsername: ""
         };
 
         let wikiData = { categories: [] };
@@ -788,6 +890,7 @@
             await loadSiteConfig();
             await loadWikiManifest();
             configureMarked();
+            initializeGitHub();
 
             document.getElementById('currentYear').textContent = new Date().getFullYear();
             themeToggle.addEventListener('change', toggleTheme);
@@ -822,6 +925,7 @@
         function updateCodeTheme(isDark) {
             document.getElementById('hljs-light').disabled = isDark;
             document.getElementById('hljs-dark').disabled = !isDark;
+            updateGitHubTheme(isDark);
         }
 
         // ===== Config Loading =====
@@ -1255,6 +1359,148 @@
                     } catch (e) { console.warn('MathJax typesetting error:', e); }
                 }
             }
+        }
+
+        // ===== GitHub Integration =====
+        function initializeGitHub() {
+            const user = siteConfig.githubUsername;
+            if (!user) return;
+
+            document.getElementById('githubSection').style.display = '';
+            const isDark = htmlEl.classList.contains('dark');
+
+            document.getElementById('ghContribChart').src = `https://ghchart.rshah.org/${user}`;
+            setGitHubCardSrcs(user, isDark);
+            loadGitHubActivity(user);
+        }
+
+        function setGitHubCardSrcs(user, isDark) {
+            const colors = isDark
+                ? 'title_color=e8e8e8&text_color=999999&icon_color=e8e8e8'
+                : 'title_color=1a1a1a&text_color=666666&icon_color=1a1a1a';
+            const base = `bg_color=00000000&hide_border=true&border_radius=12&${colors}`;
+
+            const statsEl = document.getElementById('ghStatsCard');
+            const streakEl = document.getElementById('ghStreakCard');
+
+            if (statsEl) {
+                statsEl.src = `https://github-readme-stats.vercel.app/api?username=${user}&show_icons=true&include_all_commits=true&${base}`;
+            }
+            if (streakEl) {
+                const streakColors = isDark
+                    ? 'background=00000000&ring=e8e8e8&fire=e8e8e8&currStreakLabel=e8e8e8&sideLabels=999999&currStreakNum=e8e8e8&sideNums=999999&dates=666666'
+                    : 'background=00000000&ring=1a1a1a&fire=1a1a1a&currStreakLabel=1a1a1a&sideLabels=666666&currStreakNum=1a1a1a&sideNums=666666&dates=999999';
+                streakEl.src = `https://streak-stats.demolab.com/?user=${user}&hide_border=true&border_radius=12&${streakColors}`;
+            }
+        }
+
+        function updateGitHubTheme(isDark) {
+            const user = siteConfig.githubUsername;
+            if (!user) return;
+            setGitHubCardSrcs(user, isDark);
+        }
+
+        async function loadGitHubActivity(user) {
+            const container = document.getElementById('ghActivity');
+            try {
+                const resp = await fetch(`https://api.github.com/users/${user}/events/public?per_page=30`);
+                if (!resp.ok) throw new Error(resp.status);
+                const events = await resp.json();
+
+                const relevant = events.filter(e =>
+                    ['PushEvent', 'CreateEvent', 'IssuesEvent', 'PullRequestEvent',
+                     'WatchEvent', 'ForkEvent', 'ReleaseEvent', 'IssueCommentEvent'].includes(e.type)
+                ).slice(0, 8);
+
+                if (relevant.length === 0) {
+                    container.innerHTML = '<p class="activity-empty">No recent public activity.</p>';
+                    return;
+                }
+
+                let html = '<ul class="activity-list">';
+                relevant.forEach(ev => {
+                    const { icon, text } = formatEvent(ev);
+                    const repo = ev.repo.name;
+                    const repoUrl = `https://github.com/${repo}`;
+                    const time = timeAgo(new Date(ev.created_at));
+
+                    html += `<li class="activity-item">
+                        <span class="activity-icon">${icon}</span>
+                        <div class="activity-body">
+                            <div>${text} <a href="${repoUrl}" target="_blank" rel="noopener">${repo.split('/')[1]}</a></div>
+                            <div class="activity-time">${time}</div>
+                        </div>
+                    </li>`;
+                });
+                html += '</ul>';
+                container.innerHTML = html;
+            } catch (e) {
+                container.innerHTML = '<p class="activity-empty">Could not load activity.</p>';
+            }
+        }
+
+        function formatEvent(ev) {
+            const icons = {
+                PushEvent: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/></svg>',
+                CreateEvent: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+                IssuesEvent: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+                PullRequestEvent: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>',
+                WatchEvent: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+                ForkEvent: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M18 9v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/><line x1="12" y1="12" x2="12" y2="15"/></svg>',
+                ReleaseEvent: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>',
+                IssueCommentEvent: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+            };
+
+            const icon = icons[ev.type] || icons.CreateEvent;
+            let text = '';
+            const p = ev.payload;
+
+            switch (ev.type) {
+                case 'PushEvent': {
+                    const n = p.commits ? p.commits.length : 0;
+                    text = `Pushed <strong>${n} commit${n !== 1 ? 's' : ''}</strong> to`;
+                    break;
+                }
+                case 'CreateEvent':
+                    text = `Created ${p.ref_type}${p.ref ? ` <strong>${p.ref}</strong> in` : ''}`;
+                    break;
+                case 'IssuesEvent':
+                    text = `${capitalize(p.action)} issue <strong>#${p.issue?.number || ''}</strong> in`;
+                    break;
+                case 'PullRequestEvent':
+                    text = `${capitalize(p.action)} PR <strong>#${p.pull_request?.number || ''}</strong> in`;
+                    break;
+                case 'WatchEvent':
+                    text = 'Starred';
+                    break;
+                case 'ForkEvent':
+                    text = 'Forked';
+                    break;
+                case 'ReleaseEvent':
+                    text = `${capitalize(p.action)} release in`;
+                    break;
+                case 'IssueCommentEvent':
+                    text = `Commented on issue <strong>#${p.issue?.number || ''}</strong> in`;
+                    break;
+                default:
+                    text = `${ev.type.replace('Event', '')} in`;
+            }
+            return { icon, text };
+        }
+
+        function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+
+        function timeAgo(date) {
+            const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+            const intervals = [
+                [31536000, 'year'], [2592000, 'month'], [604800, 'week'],
+                [86400, 'day'], [3600, 'hour'], [60, 'minute']
+            ];
+            for (const [secs, label] of intervals) {
+                const count = Math.floor(seconds / secs);
+                if (count >= 1) return `${count} ${label}${count > 1 ? 's' : ''} ago`;
+            }
+            return 'just now';
         }
 
         // ===== Mobile Sidebar =====
