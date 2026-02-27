@@ -1,6 +1,22 @@
 {
     "categories": [
         {
+            "id": "esp32",
+            "name": "ESP32",
+            "articles": [
+                {
+                    "id": "esp32-wsl2-setup",
+                    "title": "Using WSL to compile projects",
+                    "path": "Wiki/ESP32/WSL2 Setup.md",
+                    "date": "2026-02-27",
+                    "tags": [
+                        "linux",
+                        "vscode"
+                    ]
+                }
+            ]
+        },
+        {
             "id": "raspberry-pi",
             "name": "Raspberry Pi",
             "articles": [
