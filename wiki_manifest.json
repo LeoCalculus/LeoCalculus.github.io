@@ -1,0 +1,28 @@
+{
+    "categories": [
+        {
+            "id": "stm32",
+            "name": "STM32",
+            "articles": [
+                {
+                    "id": "stm32-getting-started",
+                    "title": "Getting Started",
+                    "path": "Wiki/STM32/Getting Started.md",
+                    "date": "2026-02-26"
+                }
+            ]
+        },
+        {
+            "id": "raspberry-pi",
+            "name": "Raspberry Pi",
+            "articles": [
+                {
+                    "id": "rpi-setup",
+                    "title": "Setup Guide",
+                    "path": "Wiki/Raspberry Pi/Setup Guide.md",
+                    "date": "2026-02-26"
+                }
+            ]
+        }
+    ]
+}
