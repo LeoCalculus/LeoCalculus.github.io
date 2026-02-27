@@ -149,22 +149,32 @@
         input:checked + .slider { background-color: var(--primary-accent-color); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* ===== Wiki Layout ===== */
+        /* ===== Wiki Layout (3-column) ===== */
         .wiki-layout {
             display: flex;
-            gap: 1.5rem;
+            gap: 1rem;
             min-height: calc(100vh - 180px);
             align-items: flex-start;
         }
 
-        .wiki-sidebar {
-            width: 300px;
+        .wiki-nav-panels { display: contents; }
+
+        .wiki-categories {
+            width: 150px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 80px;
+            padding: 0.85rem;
+        }
+
+        .wiki-articles {
+            width: 240px;
             flex-shrink: 0;
             position: sticky;
             top: 80px;
             max-height: calc(100vh - 100px);
             overflow-y: auto;
-            padding: 1.25rem;
+            padding: 1rem;
         }
 
         .wiki-content-wrapper {
@@ -172,26 +182,62 @@
             min-width: 0;
         }
 
-        /* ===== Sidebar Styles ===== */
-        .sidebar-header {
-            padding: 0.25rem 0.5rem 1rem;
+        /* ===== Category Column ===== */
+        .categories-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary-accent-color);
+            padding: 0.15rem 0.5rem 0.75rem;
             border-bottom: 1px solid var(--card-border-color);
-            margin-bottom: 1rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .category-item {
+            padding: 0.55rem 0.7rem;
+            border-radius: 0.65rem;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.88rem;
+            color: var(--text-muted-color);
+            transition: all 0.2s ease;
+            margin-bottom: 0.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .category-item:hover {
+            background: var(--sidebar-hover-bg);
+            color: var(--text-color);
+        }
+        .category-item.active {
+            background: var(--sidebar-active-bg);
+            color: var(--primary-accent-color);
+            font-weight: 600;
+        }
+
+        /* ===== Articles Column ===== */
+        .articles-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary-accent-color);
+            padding: 0.1rem 0.25rem 0.65rem;
+            border-bottom: 1px solid var(--card-border-color);
+            margin-bottom: 0.6rem;
         }
 
         /* ===== Sidebar Search ===== */
         .sidebar-search {
             position: relative;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
         .sidebar-search input {
             width: 100%;
-            padding: 0.55rem 2rem 0.55rem 2.2rem;
-            border-radius: 0.75rem;
+            padding: 0.5rem 2rem 0.5rem 2rem;
+            border-radius: 0.65rem;
             border: 1px solid var(--card-border-color);
             background: var(--sidebar-hover-bg);
             color: var(--text-color);
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             outline: none;
             transition: border-color 0.2s ease;
             font-family: inherit;
@@ -200,7 +246,7 @@
         .sidebar-search input::placeholder { color: var(--text-muted-color); }
         .sidebar-search-icon {
             position: absolute;
-            left: 0.7rem;
+            left: 0.6rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted-color);
@@ -208,7 +254,7 @@
         }
         .sidebar-search-clear {
             position: absolute;
-            right: 0.45rem;
+            right: 0.4rem;
             top: 50%;
             transform: translateY(-50%);
             background: none;
@@ -222,54 +268,17 @@
         }
         .sidebar-search-clear:hover { color: var(--text-color); }
 
-        .category-section { margin-bottom: 0.5rem; }
-
-        .category-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.7rem 0.75rem;
-            border-radius: 0.75rem;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text-color);
-            transition: background 0.2s ease;
-            user-select: none;
-        }
-        .category-header:hover { background: var(--sidebar-hover-bg); }
-
-        .category-chevron {
-            transition: transform 0.25s ease;
-            font-size: 0.7rem;
-            opacity: 0.5;
-            margin-left: auto;
-        }
-        .category-header.collapsed .category-chevron { transform: rotate(-90deg); }
-
-        .category-articles {
-            overflow: hidden;
-            transition: max-height 0.3s ease, opacity 0.25s ease;
-            max-height: 600px;
-            opacity: 1;
-        }
-        .category-articles.collapsed {
-            max-height: 0;
-            opacity: 0;
-        }
-
         .sidebar-article {
             display: block;
-            padding: 0.55rem 0.75rem 0.55rem 2.25rem;
-            border-radius: 0.6rem;
+            padding: 0.5rem 0.65rem;
+            border-radius: 0.55rem;
             cursor: pointer;
-            font-size: 0.88rem;
+            font-size: 0.84rem;
             color: var(--text-muted-color);
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
             margin: 1px 0;
             text-decoration: none;
-            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -282,6 +291,13 @@
             color: var(--primary-accent-color);
             font-weight: 600;
             border-left-color: var(--primary-accent-color);
+        }
+
+        .articles-empty {
+            padding: 0.5rem 0.25rem;
+            font-size: 0.82rem;
+            color: var(--text-muted-color);
+            font-style: italic;
         }
 
         /* ===== Wiki Content Card ===== */
@@ -572,9 +588,9 @@
         }
 
         /* ===== Scrollbar ===== */
-        .wiki-sidebar::-webkit-scrollbar { width: 5px; }
-        .wiki-sidebar::-webkit-scrollbar-thumb { background: var(--text-muted-color); border-radius: 3px; opacity: 0.4; }
-        .wiki-sidebar::-webkit-scrollbar-track { background: transparent; }
+        .wiki-articles::-webkit-scrollbar { width: 5px; }
+        .wiki-articles::-webkit-scrollbar-thumb { background: var(--text-muted-color); border-radius: 3px; opacity: 0.4; }
+        .wiki-articles::-webkit-scrollbar-track { background: transparent; }
 
         /* ===== Mobile Sidebar ===== */
         .sidebar-overlay {
@@ -593,7 +609,9 @@
         @media (max-width: 768px) {
             .wiki-layout { flex-direction: column; }
 
-            .wiki-sidebar {
+            .wiki-nav-panels {
+                display: flex;
+                flex-direction: column;
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -603,9 +621,54 @@
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
                 border-radius: 0 1rem 1rem 0;
-                max-height: 100vh;
+                background-color: var(--card-bg-color);
+                backdrop-filter: blur(12px) saturate(120%);
+                -webkit-backdrop-filter: blur(12px) saturate(120%);
+                border: 1px solid var(--card-border-color);
+                padding: 1rem;
+                gap: 0.5rem;
+                overflow-y: auto;
             }
-            .wiki-sidebar.open { transform: translateX(0); }
+            .wiki-nav-panels.open { transform: translateX(0); }
+
+            .wiki-categories {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.35rem;
+                width: auto;
+                position: static;
+                padding: 0.5rem 0;
+                border-radius: 0;
+                background: none;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                border: none;
+                box-shadow: none;
+            }
+            .categories-title { display: none; }
+            .category-item {
+                padding: 0.4rem 0.7rem;
+                font-size: 0.8rem;
+                margin-bottom: 0;
+                border-radius: 999px;
+                border: 1px solid var(--card-border-color);
+            }
+
+            .wiki-articles {
+                flex: 1;
+                width: auto;
+                position: static;
+                max-height: none;
+                overflow-y: visible;
+                border-radius: 0;
+                background: none;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
+            .articles-title { display: none; }
 
             #mobileSidebarToggle {
                 display: flex;
@@ -674,19 +737,23 @@
             <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
 
             <div class="wiki-layout">
-                <aside id="wikiSidebar" class="wiki-sidebar frosted-glass">
-                    <div class="sidebar-header">
-                        <h2 class="text-xl font-bold" style="color: var(--primary-accent-color);">Wiki</h2>
-                    </div>
-                    <div class="sidebar-search">
-                        <svg class="sidebar-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        <input id="wikiSearch" type="text" placeholder="Search articles or tags..." oninput="onSearchInput(this.value)">
-                        <button class="sidebar-search-clear" id="searchClear" onclick="clearSearch()">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                        </button>
-                    </div>
-                    <div id="sidebarContent"></div>
-                </aside>
+                <div id="wikiSidebar" class="wiki-nav-panels">
+                    <nav class="wiki-categories frosted-glass">
+                        <h3 class="categories-title">Wiki</h3>
+                        <div id="wikiCategories"></div>
+                    </nav>
+                    <aside class="wiki-articles frosted-glass">
+                        <h3 class="articles-title" id="articlesPanelTitle">Articles</h3>
+                        <div class="sidebar-search">
+                            <svg class="sidebar-search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input id="wikiSearch" type="text" placeholder="Search..." oninput="onSearchInput(this.value)">
+                            <button class="sidebar-search-clear" id="searchClear" onclick="clearSearch()">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                        <div id="articlesListContent"></div>
+                    </aside>
+                </div>
 
                 <div class="wiki-content-wrapper">
                     <div id="wikiContent" class="wiki-content-card frosted-glass fade-in">
@@ -709,7 +776,7 @@
 
         let wikiData = { categories: [] };
         let activeArticleId = null;
-        let expandedCategories = new Set();
+        let selectedCategoryId = null;
         let searchQuery = '';
 
         const themeToggle = document.getElementById('themeToggleCheckbox');
@@ -778,7 +845,7 @@
                 const resp = await fetch('wiki_manifest.json');
                 if (resp.ok) {
                     wikiData = await resp.json();
-                    wikiData.categories.forEach(c => expandedCategories.add(c.id));
+                    if (wikiData.categories.length > 0) selectedCategoryId = wikiData.categories[0].id;
                 }
             } catch (e) { console.warn('Could not load wiki_manifest.json', e); }
         }
@@ -840,7 +907,8 @@
             updateActiveTab(tabEl);
 
             if (sectionId === 'wiki') {
-                renderSidebar();
+                renderCategories();
+                renderArticlesList();
                 if (!activeArticleId) showWikiWelcome();
             }
         }
@@ -861,14 +929,14 @@
         function onSearchInput(value) {
             searchQuery = value.trim().toLowerCase();
             document.getElementById('searchClear').style.display = searchQuery ? 'block' : 'none';
-            renderSidebar();
+            renderArticlesList();
         }
 
         function clearSearch() {
             searchQuery = '';
             document.getElementById('wikiSearch').value = '';
             document.getElementById('searchClear').style.display = 'none';
-            renderSidebar();
+            renderArticlesList();
         }
 
         function searchByTag(tag) {
@@ -879,7 +947,7 @@
             if (!document.getElementById('wiki').classList.contains('visible')) {
                 showSection('wiki');
             }
-            renderSidebar();
+            renderArticlesList();
         }
 
         // ===== Copy Code =====
@@ -907,85 +975,89 @@
             }, 2000);
         }
 
-        // ===== Sidebar =====
-        function renderSidebar() {
-            const container = document.getElementById('sidebarContent');
+        // ===== Categories Column =====
+        function renderCategories() {
+            const container = document.getElementById('wikiCategories');
             container.innerHTML = '';
 
             if (wikiData.categories.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted-color); padding: 0.5rem; font-size: 0.9rem;">No categories yet. Add entries to wiki_manifest.json.</p>';
+                container.innerHTML = '<p class="articles-empty">No categories.</p>';
                 return;
             }
 
-            let anyResults = false;
-
             wikiData.categories.forEach(cat => {
-                let articles = cat.articles || [];
+                const item = document.createElement('div');
+                item.className = `category-item${selectedCategoryId === cat.id ? ' active' : ''}`;
+                item.textContent = cat.name;
+                item.onclick = () => selectCategory(cat.id);
+                container.appendChild(item);
+            });
+        }
 
-                if (searchQuery) {
-                    articles = articles.filter(a => {
+        function selectCategory(catId) {
+            selectedCategoryId = catId;
+            searchQuery = '';
+            const input = document.getElementById('wikiSearch');
+            if (input) input.value = '';
+            document.getElementById('searchClear').style.display = 'none';
+            renderCategories();
+            renderArticlesList();
+        }
+
+        // ===== Articles Column =====
+        function renderArticlesList() {
+            const container = document.getElementById('articlesListContent');
+            const titleEl = document.getElementById('articlesPanelTitle');
+            container.innerHTML = '';
+
+            if (searchQuery) {
+                titleEl.textContent = 'Results';
+                let results = [];
+                wikiData.categories.forEach(cat => {
+                    (cat.articles || []).forEach(a => {
                         const titleMatch = a.title.toLowerCase().includes(searchQuery);
                         const tagMatch = (a.tags || []).some(t => t.toLowerCase().includes(searchQuery));
                         const catMatch = cat.name.toLowerCase().includes(searchQuery);
-                        return titleMatch || tagMatch || catMatch;
+                        if (titleMatch || tagMatch || catMatch) results.push(a);
                     });
-                    if (articles.length === 0) return;
+                });
+
+                if (results.length === 0) {
+                    container.innerHTML = '<p class="articles-empty">No matches found.</p>';
+                    return;
                 }
-
-                anyResults = true;
-                const section = document.createElement('div');
-                section.className = 'category-section';
-
-                const isExpanded = searchQuery || expandedCategories.has(cat.id);
-
-                const header = document.createElement('div');
-                header.className = `category-header${isExpanded ? '' : ' collapsed'}`;
-                header.innerHTML = `
-                    <span>${cat.name}</span>
-                    <span class="category-chevron">&#9662;</span>
-                `;
-                header.onclick = () => toggleCategory(cat.id);
-                section.appendChild(header);
-
-                const articlesList = document.createElement('div');
-                articlesList.className = `category-articles${isExpanded ? '' : ' collapsed'}`;
-                articlesList.id = `cat-articles-${cat.id}`;
-
-                if (articles.length > 0) {
-                    articles.forEach(article => {
-                        const item = document.createElement('div');
-                        item.className = `sidebar-article${activeArticleId === article.id ? ' active' : ''}`;
-                        item.textContent = article.title;
-                        item.onclick = (e) => {
-                            e.stopPropagation();
-                            window.location.hash = `wiki/${article.id}`;
-                            closeMobileSidebar();
-                        };
-                        articlesList.appendChild(item);
-                    });
-                } else {
-                    const empty = document.createElement('div');
-                    empty.style.cssText = 'padding: 0.4rem 0.75rem 0.4rem 2.25rem; font-size: 0.82rem; color: var(--text-muted-color); font-style: italic;';
-                    empty.textContent = 'No articles yet';
-                    articlesList.appendChild(empty);
-                }
-
-                section.appendChild(articlesList);
-                container.appendChild(section);
-            });
-
-            if (!anyResults && searchQuery) {
-                container.innerHTML = '<p style="color: var(--text-muted-color); padding: 0.75rem; font-size: 0.88rem; text-align: center;">No matching articles found.</p>';
+                results.forEach(article => appendArticleItem(container, article));
+                return;
             }
+
+            if (!selectedCategoryId) {
+                titleEl.textContent = 'Articles';
+                container.innerHTML = '<p class="articles-empty">Select a category.</p>';
+                return;
+            }
+
+            const cat = wikiData.categories.find(c => c.id === selectedCategoryId);
+            if (!cat) return;
+
+            titleEl.textContent = cat.name;
+            const articles = cat.articles || [];
+
+            if (articles.length === 0) {
+                container.innerHTML = '<p class="articles-empty">No articles yet.</p>';
+                return;
+            }
+            articles.forEach(article => appendArticleItem(container, article));
         }
 
-        function toggleCategory(catId) {
-            if (expandedCategories.has(catId)) {
-                expandedCategories.delete(catId);
-            } else {
-                expandedCategories.add(catId);
-            }
-            renderSidebar();
+        function appendArticleItem(container, article) {
+            const item = document.createElement('div');
+            item.className = `sidebar-article${activeArticleId === article.id ? ' active' : ''}`;
+            item.textContent = article.title;
+            item.onclick = () => {
+                window.location.hash = `wiki/${article.id}`;
+                closeMobileSidebar();
+            };
+            container.appendChild(item);
         }
 
         // ===== Wiki Welcome =====
@@ -1040,11 +1112,9 @@
 
             const { article, category } = result;
             activeArticleId = articleId;
-
-            if (!expandedCategories.has(category.id)) {
-                expandedCategories.add(category.id);
-            }
-            renderSidebar();
+            selectedCategoryId = category.id;
+            renderCategories();
+            renderArticlesList();
 
             const contentEl = document.getElementById('wikiContent');
             contentEl.innerHTML = '<p style="color: var(--text-muted-color); font-style: italic; padding: 2rem;">Loading...</p>';
@@ -1092,6 +1162,8 @@
 
         // ===== Markdown Rendering with Obsidian Compatibility =====
         function renderMarkdown(raw) {
+            raw = raw.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, '');
+
             const mathBlocks = [];
             let mathIdx = 0;
 
@@ -1187,13 +1259,17 @@
 
         // ===== Mobile Sidebar =====
         function toggleMobileSidebar() {
-            document.getElementById('wikiSidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('open');
+            const panel = document.getElementById('wikiSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            panel.classList.toggle('open');
+            overlay.classList.toggle('open');
         }
 
         function closeMobileSidebar() {
-            document.getElementById('wikiSidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('open');
+            const panel = document.getElementById('wikiSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (panel) panel.classList.remove('open');
+            if (overlay) overlay.classList.remove('open');
         }
     </script>
 </body>
