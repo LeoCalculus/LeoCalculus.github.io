@@ -179,6 +179,49 @@
             margin-bottom: 1rem;
         }
 
+        /* ===== Sidebar Search ===== */
+        .sidebar-search {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .sidebar-search input {
+            width: 100%;
+            padding: 0.55rem 2rem 0.55rem 2.2rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--card-border-color);
+            background: var(--sidebar-hover-bg);
+            color: var(--text-color);
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+            font-family: inherit;
+        }
+        .sidebar-search input:focus { border-color: var(--primary-accent-color); }
+        .sidebar-search input::placeholder { color: var(--text-muted-color); }
+        .sidebar-search-icon {
+            position: absolute;
+            left: 0.7rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted-color);
+            pointer-events: none;
+        }
+        .sidebar-search-clear {
+            position: absolute;
+            right: 0.45rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted-color);
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 50%;
+            display: none;
+            line-height: 1;
+        }
+        .sidebar-search-clear:hover { color: var(--text-color); }
+
         .category-section { margin-bottom: 0.5rem; }
 
         .category-header {
@@ -271,6 +314,24 @@
             color: var(--text-muted-color);
         }
 
+        .article-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+        .article-tag {
+            display: inline-block;
+            padding: 0.15rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            background: var(--sidebar-hover-bg);
+            color: var(--text-muted-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--card-border-color);
+        }
+        .article-tag:hover {
+            color: var(--primary-accent-color);
+            border-color: var(--primary-accent-color);
+        }
+
         /* ===== Wiki Welcome View ===== */
         .wiki-welcome { text-align: center; padding: 3rem 1rem; }
         .wiki-welcome h2 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
@@ -337,6 +398,34 @@
             border-radius: 0;
             font-size: inherit;
         }
+
+        /* ===== Code Copy Button ===== */
+        .code-block-wrapper {
+            position: relative;
+        }
+        .code-block-wrapper pre {
+            margin: 0;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.55rem;
+            right: 0.55rem;
+            padding: 0.35rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--card-border-color);
+            background: var(--pre-bg-color);
+            color: var(--text-muted-color);
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease, color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+        .code-block-wrapper:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { color: var(--text-color); }
+        .copy-btn.copied { color: var(--callout-tip); opacity: 1; }
 
         .wiki-viewer ul, .wiki-viewer ol {
             margin-left: 0;
@@ -589,6 +678,13 @@
                     <div class="sidebar-header">
                         <h2 class="text-xl font-bold" style="color: var(--primary-accent-color);">Wiki</h2>
                     </div>
+                    <div class="sidebar-search">
+                        <svg class="sidebar-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input id="wikiSearch" type="text" placeholder="Search articles or tags..." oninput="onSearchInput(this.value)">
+                        <button class="sidebar-search-clear" id="searchClear" onclick="clearSearch()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                    </div>
                     <div id="sidebarContent"></div>
                 </aside>
 
@@ -614,6 +710,7 @@
         let wikiData = { categories: [] };
         let activeArticleId = null;
         let expandedCategories = new Set();
+        let searchQuery = '';
 
         const themeToggle = document.getElementById('themeToggleCheckbox');
         const htmlEl = document.documentElement;
@@ -702,7 +799,9 @@
                         } catch (e) {
                             highlighted = text;
                         }
-                        return `<pre><code class="hljs${language ? ' language-' + language : ''}">${highlighted}</code></pre>`;
+                        const copyIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+                        const langLabel = language ? `<span style="position:absolute;top:0.45rem;left:0.75rem;font-size:0.7rem;color:var(--text-muted-color);font-family:inherit;text-transform:uppercase;letter-spacing:0.04em;pointer-events:none;">${language}</span>` : '';
+                        return `<div class="code-block-wrapper">${langLabel}<button class="copy-btn" onclick="copyCode(this)" title="Copy">${copyIcon}</button><pre><code class="hljs${language ? ' language-' + language : ''}">${highlighted}</code></pre></div>`;
                     }
                 }
             });
@@ -758,6 +857,56 @@
             }
         }
 
+        // ===== Search =====
+        function onSearchInput(value) {
+            searchQuery = value.trim().toLowerCase();
+            document.getElementById('searchClear').style.display = searchQuery ? 'block' : 'none';
+            renderSidebar();
+        }
+
+        function clearSearch() {
+            searchQuery = '';
+            document.getElementById('wikiSearch').value = '';
+            document.getElementById('searchClear').style.display = 'none';
+            renderSidebar();
+        }
+
+        function searchByTag(tag) {
+            searchQuery = tag.toLowerCase();
+            const input = document.getElementById('wikiSearch');
+            if (input) input.value = tag;
+            document.getElementById('searchClear').style.display = 'block';
+            if (!document.getElementById('wiki').classList.contains('visible')) {
+                showSection('wiki');
+            }
+            renderSidebar();
+        }
+
+        // ===== Copy Code =====
+        const copyIconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+        const checkIconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+        async function copyCode(btn) {
+            const code = btn.closest('.code-block-wrapper').querySelector('code');
+            try {
+                await navigator.clipboard.writeText(code.textContent);
+            } catch {
+                const ta = document.createElement('textarea');
+                ta.value = code.textContent;
+                ta.style.cssText = 'position:fixed;opacity:0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            }
+            btn.classList.add('copied');
+            btn.innerHTML = checkIconSvg;
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = copyIconSvg;
+            }, 2000);
+        }
+
         // ===== Sidebar =====
         function renderSidebar() {
             const container = document.getElementById('sidebarContent');
@@ -768,11 +917,26 @@
                 return;
             }
 
+            let anyResults = false;
+
             wikiData.categories.forEach(cat => {
+                let articles = cat.articles || [];
+
+                if (searchQuery) {
+                    articles = articles.filter(a => {
+                        const titleMatch = a.title.toLowerCase().includes(searchQuery);
+                        const tagMatch = (a.tags || []).some(t => t.toLowerCase().includes(searchQuery));
+                        const catMatch = cat.name.toLowerCase().includes(searchQuery);
+                        return titleMatch || tagMatch || catMatch;
+                    });
+                    if (articles.length === 0) return;
+                }
+
+                anyResults = true;
                 const section = document.createElement('div');
                 section.className = 'category-section';
 
-                const isExpanded = expandedCategories.has(cat.id);
+                const isExpanded = searchQuery || expandedCategories.has(cat.id);
 
                 const header = document.createElement('div');
                 header.className = `category-header${isExpanded ? '' : ' collapsed'}`;
@@ -787,8 +951,8 @@
                 articlesList.className = `category-articles${isExpanded ? '' : ' collapsed'}`;
                 articlesList.id = `cat-articles-${cat.id}`;
 
-                if (cat.articles && cat.articles.length > 0) {
-                    cat.articles.forEach(article => {
+                if (articles.length > 0) {
+                    articles.forEach(article => {
                         const item = document.createElement('div');
                         item.className = `sidebar-article${activeArticleId === article.id ? ' active' : ''}`;
                         item.textContent = article.title;
@@ -809,6 +973,10 @@
                 section.appendChild(articlesList);
                 container.appendChild(section);
             });
+
+            if (!anyResults && searchQuery) {
+                container.innerHTML = '<p style="color: var(--text-muted-color); padding: 0.75rem; font-size: 0.88rem; text-align: center;">No matching articles found.</p>';
+            }
         }
 
         function toggleCategory(catId) {
@@ -899,10 +1067,15 @@
 
             const html = renderMarkdown(rawMarkdown);
 
+            const tagsHtml = (article.tags && article.tags.length > 0)
+                ? `<div class="article-tags">${article.tags.map(t => `<span class="article-tag" onclick="searchByTag('${t.replace(/'/g, "\\'")}')">${t}</span>`).join('')}</div>`
+                : '';
+
             const metaHtml = `
                 <div class="article-meta">
                     <span class="article-category-badge">${category.name}</span>
                     ${article.date ? `<span class="article-date">${formatDate(article.date)}</span>` : ''}
+                    ${tagsHtml}
                 </div>`;
 
             contentEl.innerHTML = `<div class="fade-in">${metaHtml}<div class="wiki-viewer">${html}</div></div>`;

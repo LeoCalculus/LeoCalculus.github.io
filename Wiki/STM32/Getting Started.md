@@ -1,3 +1,7 @@
+---
+tags: [embedded, arm, gpio, hal]
+---
+
 # Getting Started with STM32
 
 STM32 microcontrollers are a family of 32-bit ARM Cortex-M based MCUs manufactured by STMicroelectronics. They are widely used in embedded systems, robotics, and IoT applications.

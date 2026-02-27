@@ -1,3 +1,7 @@
+---
+tags: [linux, gpio, python, ssh]
+---
+
 # Raspberry Pi Setup Guide
 
 A comprehensive guide to setting up your Raspberry Pi for development projects.
