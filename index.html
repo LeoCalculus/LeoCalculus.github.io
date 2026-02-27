@@ -160,10 +160,12 @@
         .wiki-nav-panels { display: contents; }
 
         .wiki-categories {
-            width: 150px;
+            width: 180px;
             flex-shrink: 0;
             position: sticky;
             top: 80px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
             padding: 0.85rem;
         }
 
@@ -192,15 +194,52 @@
             margin-bottom: 0.6rem;
         }
 
+        /* ===== Section Headers ===== */
+        .section-block { margin-bottom: 0.25rem; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.5rem;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 0.5rem;
+            transition: background 0.2s ease;
+        }
+        .section-header:hover { background: var(--sidebar-hover-bg); }
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted-color);
+        }
+        .section-chevron {
+            font-size: 0.55rem;
+            color: var(--text-muted-color);
+            transition: transform 0.2s ease;
+            margin-left: auto;
+        }
+        .section-header.collapsed .section-chevron { transform: rotate(-90deg); }
+
+        .section-categories {
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.2s ease;
+            max-height: 500px;
+            opacity: 1;
+        }
+        .section-categories.collapsed { max-height: 0; opacity: 0; }
+
         .category-item {
-            padding: 0.55rem 0.7rem;
-            border-radius: 0.65rem;
+            padding: 0.45rem 0.6rem 0.45rem 0.85rem;
+            border-radius: 0.6rem;
             cursor: pointer;
             font-weight: 500;
-            font-size: 0.88rem;
+            font-size: 0.84rem;
             color: var(--text-muted-color);
             transition: all 0.2s ease;
-            margin-bottom: 0.15rem;
+            margin-bottom: 0.1rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -646,6 +685,11 @@
                 box-shadow: none;
             }
             .categories-title { display: none; }
+            .section-block { margin-bottom: 0.3rem; }
+            .section-header { padding: 0.25rem 0.4rem; }
+            .section-label { font-size: 0.68rem; }
+            .section-categories { display: flex; flex-wrap: wrap; gap: 0.3rem; padding-left: 0.2rem; }
+            .section-categories.collapsed { display: none; }
             .category-item {
                 padding: 0.4rem 0.7rem;
                 font-size: 0.8rem;
@@ -876,9 +920,10 @@
             githubUsername: ""
         };
 
-        let wikiData = { categories: [] };
+        let wikiData = { sections: [] };
         let activeArticleId = null;
         let selectedCategoryId = null;
+        let collapsedSections = new Set();
         let searchQuery = '';
 
         const themeToggle = document.getElementById('themeToggleCheckbox');
@@ -944,12 +989,24 @@
         }
 
         // ===== Wiki Manifest =====
+        function getAllCategories() {
+            const cats = [];
+            for (const sec of (wikiData.sections || [])) {
+                for (const cat of (sec.categories || [])) cats.push(cat);
+            }
+            return cats;
+        }
+
         async function loadWikiManifest() {
             try {
                 const resp = await fetch('wiki_manifest.json');
                 if (resp.ok) {
                     wikiData = await resp.json();
-                    if (wikiData.categories.length > 0) selectedCategoryId = wikiData.categories[0].id;
+                    if (!wikiData.sections) {
+                        wikiData = { sections: [{ id: 'all', name: 'All', categories: wikiData.categories || [] }] };
+                    }
+                    const allCats = getAllCategories();
+                    if (allCats.length > 0) selectedCategoryId = allCats[0].id;
                 }
             } catch (e) { console.warn('Could not load wiki_manifest.json', e); }
         }
@@ -1084,18 +1141,47 @@
             const container = document.getElementById('wikiCategories');
             container.innerHTML = '';
 
-            if (wikiData.categories.length === 0) {
+            const sections = wikiData.sections || [];
+            if (sections.length === 0) {
                 container.innerHTML = '<p class="articles-empty">No categories.</p>';
                 return;
             }
 
-            wikiData.categories.forEach(cat => {
-                const item = document.createElement('div');
-                item.className = `category-item${selectedCategoryId === cat.id ? ' active' : ''}`;
-                item.textContent = cat.name;
-                item.onclick = () => selectCategory(cat.id);
-                container.appendChild(item);
+            sections.forEach(sec => {
+                const block = document.createElement('div');
+                block.className = 'section-block';
+
+                const isCollapsed = collapsedSections.has(sec.id);
+
+                const header = document.createElement('div');
+                header.className = `section-header${isCollapsed ? ' collapsed' : ''}`;
+                header.innerHTML = `<span class="section-label">${sec.name}</span><span class="section-chevron">▼</span>`;
+                header.onclick = () => toggleSection(sec.id);
+                block.appendChild(header);
+
+                const list = document.createElement('div');
+                list.className = `section-categories${isCollapsed ? ' collapsed' : ''}`;
+
+                (sec.categories || []).forEach(cat => {
+                    const item = document.createElement('div');
+                    item.className = `category-item${selectedCategoryId === cat.id ? ' active' : ''}`;
+                    item.textContent = cat.name;
+                    item.onclick = () => selectCategory(cat.id);
+                    list.appendChild(item);
+                });
+
+                block.appendChild(list);
+                container.appendChild(block);
             });
+        }
+
+        function toggleSection(sectionId) {
+            if (collapsedSections.has(sectionId)) {
+                collapsedSections.delete(sectionId);
+            } else {
+                collapsedSections.add(sectionId);
+            }
+            renderCategories();
         }
 
         function selectCategory(catId) {
@@ -1117,7 +1203,7 @@
             if (searchQuery) {
                 titleEl.textContent = 'Results';
                 let results = [];
-                wikiData.categories.forEach(cat => {
+                getAllCategories().forEach(cat => {
                     (cat.articles || []).forEach(a => {
                         const titleMatch = a.title.toLowerCase().includes(searchQuery);
                         const tagMatch = (a.tags || []).some(t => t.toLowerCase().includes(searchQuery));
@@ -1140,7 +1226,7 @@
                 return;
             }
 
-            const cat = wikiData.categories.find(c => c.id === selectedCategoryId);
+            const cat = getAllCategories().find(c => c.id === selectedCategoryId);
             if (!cat) return;
 
             titleEl.textContent = cat.name;
@@ -1169,7 +1255,7 @@
             const content = document.getElementById('wikiContent');
             let cardsHtml = '';
 
-            wikiData.categories.forEach(cat => {
+            getAllCategories().forEach(cat => {
                 const count = cat.articles ? cat.articles.length : 0;
                 const firstArticleId = count > 0 ? cat.articles[0].id : null;
                 const onclick = firstArticleId
@@ -1194,7 +1280,7 @@
 
         // ===== Select & Render Article =====
         function findArticle(articleId) {
-            for (const cat of wikiData.categories) {
+            for (const cat of getAllCategories()) {
                 if (cat.articles) {
                     const found = cat.articles.find(a => a.id === articleId);
                     if (found) return { article: found, category: cat };
@@ -1239,7 +1325,8 @@
                 rawMarkdown = article.content || '# Empty Article\n\nNo content available.';
             }
 
-            const html = renderMarkdown(rawMarkdown);
+            const basePath = article.path ? article.path.substring(0, article.path.lastIndexOf('/') + 1) : '';
+            const html = renderMarkdown(rawMarkdown, basePath);
 
             const tagsHtml = (article.tags && article.tags.length > 0)
                 ? `<div class="article-tags">${article.tags.map(t => `<span class="article-tag" onclick="searchByTag('${t.replace(/'/g, "\\'")}')">${t}</span>`).join('')}</div>`
@@ -1265,7 +1352,8 @@
         }
 
         // ===== Markdown Rendering with Obsidian Compatibility =====
-        function renderMarkdown(raw) {
+        function renderMarkdown(raw, basePath) {
+            basePath = basePath || '';
             raw = raw.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, '');
 
             const mathBlocks = [];
@@ -1291,8 +1379,18 @@
                 return text.replace(/==(.*?)==/g, '<mark>$1</mark>');
             }
 
+            function processObsidianImages(text) {
+                return text.replace(/!\[\[([^\]|]+?)(?:\|([^\]]*))?\]\]/g, (match, path, alt) => {
+                    const filename = path.trim();
+                    const altText = alt ? alt.trim() : filename.split('/').pop();
+                    const resolved = filename.includes('/') ? filename : `pic/${filename}`;
+                    return `![${altText}](${resolved})`;
+                });
+            }
+
             let processed = processOutsideCode(raw, (text) => {
                 text = extractMath(text);
+                text = processObsidianImages(text);
                 text = processHighlights(text);
                 return text;
             });
@@ -1304,7 +1402,18 @@
                 html = html.split(key).join(value);
             });
 
+            if (basePath) {
+                html = resolveImagePaths(html, basePath);
+            }
+
             return html;
+        }
+
+        function resolveImagePaths(html, basePath) {
+            return html.replace(/<img\s+([^>]*?)src="([^"]+)"([^>]*?)>/gi, (match, before, src, after) => {
+                if (/^(https?:\/\/|\/|data:)/.test(src)) return match;
+                return `<img ${before}src="${basePath}${src}"${after}>`;
+            });
         }
 
         function processOutsideCode(markdown, processor) {

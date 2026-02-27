@@ -1,56 +1,72 @@
 {
-    "categories": [
+    "sections": [
         {
-            "id": "esp32",
-            "name": "ESP32",
-            "articles": [
+            "id": "mcumini-computer",
+            "name": "MCU/Mini Computer",
+            "categories": [
                 {
-                    "id": "esp32-wsl2-setup",
-                    "title": "Using WSL to compile projects",
-                    "path": "Wiki/ESP32/WSL2 Setup.md",
-                    "date": "2026-02-27",
-                    "tags": [
-                        "linux",
-                        "vscode"
+                    "id": "esp32",
+                    "name": "ESP32",
+                    "articles": [
+                        {
+                            "id": "esp32-wsl2-setup",
+                            "title": "Using WSL to compile projects",
+                            "path": "Wiki/ESP32/WSL2 Setup.md",
+                            "date": "2026-02-27",
+                            "tags": [
+                                "linux",
+                                "vscode"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "stm32",
+                    "name": "STM32",
+                    "articles": [
+                        {
+                            "id": "stm32-getting-started",
+                            "title": "Getting Started with STM32",
+                            "path": "Wiki/STM32/Getting Started.md",
+                            "date": "2026-02-26",
+                            "tags": [
+                                "embedded",
+                                "arm",
+                                "gpio",
+                                "hal"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "raspberry-pi",
+                    "name": "Raspberry Pi",
+                    "articles": [
+                        {
+                            "id": "raspberry-pi-setup-guide",
+                            "title": "Raspberry Pi Setup Guide",
+                            "path": "Wiki/Raspberry Pi/Setup Guide.md",
+                            "date": "2026-02-26",
+                            "tags": [
+                                "linux",
+                                "gpio",
+                                "python",
+                                "ssh"
+                            ]
+                        }
                     ]
                 }
             ]
         },
         {
-            "id": "raspberry-pi",
-            "name": "Raspberry Pi",
-            "articles": [
-                {
-                    "id": "raspberry-pi-setup-guide",
-                    "title": "Raspberry Pi Setup Guide",
-                    "path": "Wiki/Raspberry Pi/Setup Guide.md",
-                    "date": "2026-02-26",
-                    "tags": [
-                        "linux",
-                        "gpio",
-                        "python",
-                        "ssh"
-                    ]
-                }
-            ]
+            "id": "theory",
+            "name": "Theory",
+            "categories": []
         },
         {
-            "id": "stm32",
-            "name": "STM32",
-            "articles": [
-                {
-                    "id": "stm32-getting-started",
-                    "title": "Getting Started with STM32",
-                    "path": "Wiki/STM32/Getting Started.md",
-                    "date": "2026-02-26",
-                    "tags": [
-                        "embedded",
-                        "arm",
-                        "gpio",
-                        "hal"
-                    ]
-                }
-            ]
+            "id": "projects",
+            "name": "Projects",
+            "categories": []
         }
     ]
 }

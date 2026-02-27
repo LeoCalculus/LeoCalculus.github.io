@@ -1,0 +1,14 @@
+[
+    {
+        "name": "MCU/Mini Computer",
+        "folders": ["ESP32", "STM32", "Raspberry Pi"]
+    },
+    {
+        "name": "Theory",
+        "folders": []
+    },
+    {
+        "name": "Projects",
+        "folders": []
+    }
+]
