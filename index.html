@@ -1384,13 +1384,21 @@
                     const filename = path.trim();
                     const altText = alt ? alt.trim() : filename.split('/').pop();
                     const resolved = filename.includes('/') ? filename : `pic/${filename}`;
-                    return `![${altText}](${resolved})`;
+                    return `![${altText}](${resolved.replace(/ /g, '%20')})`;
+                });
+            }
+
+            function encodeImageSpaces(text) {
+                return text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (m, alt, url) => {
+                    if (/^(https?:\/\/|data:)/.test(url)) return m;
+                    return `![${alt}](${url.replace(/ /g, '%20')})`;
                 });
             }
 
             let processed = processOutsideCode(raw, (text) => {
                 text = extractMath(text);
                 text = processObsidianImages(text);
+                text = encodeImageSpaces(text);
                 text = processHighlights(text);
                 return text;
             });
