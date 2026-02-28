@@ -1,5 +1,5 @@
 ---
-title: FreeRTOS
+title: FreeRTOS Startup
 date: 2026-02-27
 tags: [FreeRTOS, hal]
 ---
