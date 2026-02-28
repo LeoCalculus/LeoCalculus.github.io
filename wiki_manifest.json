@@ -25,16 +25,20 @@
                     "name": "STM32",
                     "articles": [
                         {
+                            "id": "stm32-freertos",
+                            "title": "FreeRTOS",
+                            "path": "Wiki/STM32/FreeRTOS.md",
+                            "date": "2026-02-27",
+                            "tags": [
+                                "FreeRTOS",
+                                "hal"
+                            ]
+                        },
+                        {
                             "id": "stm32-getting-started",
                             "title": "Getting Started with STM32",
                             "path": "Wiki/STM32/Getting Started.md",
-                            "date": "2026-02-26",
-                            "tags": [
-                                "embedded",
-                                "arm",
-                                "gpio",
-                                "hal"
-                            ]
+                            "date": "2026-02-28"
                         }
                     ]
                 },
@@ -46,7 +50,7 @@
                             "id": "raspberry-pi-setup-guide",
                             "title": "Raspberry Pi Setup Guide",
                             "path": "Wiki/Raspberry Pi/Setup Guide.md",
-                            "date": "2026-02-26",
+                            "date": "2026-02-28",
                             "tags": [
                                 "linux",
                                 "gpio",

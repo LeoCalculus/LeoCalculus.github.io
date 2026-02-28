@@ -864,8 +864,8 @@
                 </div>
 
                 <div class="github-stats-row">
-                    <img id="ghStatsCard" alt="GitHub Stats" loading="lazy">
-                    <img id="ghStreakCard" alt="GitHub Streak" loading="lazy">
+                    <img id="ghStatsCard" alt="GitHub Stats" loading="lazy" onerror="this.style.display='none'">
+                    <img id="ghStreakCard" alt="GitHub Streak" loading="lazy" onerror="this.style.display='none'">
                 </div>
 
                 <div class="github-activity">
@@ -1516,10 +1516,13 @@
                 if (!resp.ok) throw new Error(resp.status);
                 const events = await resp.json();
 
-                const relevant = events.filter(e =>
-                    ['PushEvent', 'CreateEvent', 'IssuesEvent', 'PullRequestEvent',
-                     'WatchEvent', 'ForkEvent', 'ReleaseEvent', 'IssueCommentEvent'].includes(e.type)
-                ).slice(0, 8);
+                const relevant = events.filter(e => {
+                    const validTypes = ['PushEvent', 'CreateEvent', 'IssuesEvent', 'PullRequestEvent',
+                        'WatchEvent', 'ForkEvent', 'ReleaseEvent', 'IssueCommentEvent'];
+                    if (!validTypes.includes(e.type)) return false;
+                    if (e.type === 'PushEvent' && (!e.payload.commits || e.payload.commits.length === 0)) return false;
+                    return true;
+                }).slice(0, 8);
 
                 if (relevant.length === 0) {
                     container.innerHTML = '<p class="activity-empty">No recent public activity.</p>';
